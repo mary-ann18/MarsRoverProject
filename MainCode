@@ -1,1 +1,153 @@
+class Rover:   
+	def __init__(self, startPos, number):
+		self.__name = ("Rover" + str(number))
+		self.__roverX = int(startPos[0])
+		self.__roverY = int(startPos[1])
+		self.__allDirections = {
+		"N" : 0,
+		"E" : 1,
+		"S" : 2,
+		"W": 3
+		}
+		self.__roverDirection = self.__allDirections[startPos[2]]
+	
+	def move(self):
+		newPos = [self.__roverX, self.__roverY]
+		if self.__roverDirection == 0:
+			newPos[1] += 1
+		elif self.__roverDirection == 2:
+			newPos[1] -= 1
+		elif self.__roverDirection == 1:
+			newPos[0] += 1
+		elif self.__roverDirection == 3:
+			newPos[0] -= 1
+		result = plateau.checkSpace(newPos)
+		
+		if result:
+			self.__roverX = newPos[0]
+			self.__roverY = newPos[1]
+	
+	def rotate(self, rotateDirection):
+		if rotateDirection == "R":
+			self.__roverDirection += 1
+			if self.__roverDirection == 4:
+				self.__roverDirection = 0
+		else:
+			self.__roverDirection -= 1
+			if self.__roverDirection == -1:
+				self.__roverDirection = 3
 
+	def displayRover(self):
+		keys = list(self.__allDirections.keys())
+		print(self.__name, ": ", self.__roverX, self.__roverY, keys[self.__roverDirection])
+
+	def getName(self):
+		return self.__name
+	def getCoordinates(self):
+		return ([self.__roverX, self.__roverY])
+
+class Plateau:
+	def __init__(self, plateauSize):
+		self.__plateauX = int(plateauSize[0])
+		self.__plateauY = int(plateauSize[1])
+		self.__rovers = []
+
+	def addRover(self, rover):
+		self.__rovers.append(rover)
+
+	def checkSpace(self, newPos):
+		if newPos[0] > self.__plateauX or newPos[0] < 0 or newPos[1] > self.__plateauY or newPos[1] < 0:
+			return False
+		else:
+			for r in range(0, len(self.__rovers)):
+				curCoord = self.__rovers[r].getCoordinates()
+				if newPos == curCoord:
+					return False
+		return True
+
+
+
+rovers = []
+
+def createRover():
+	print("Enter the starting coordinates and direction of the rover")
+	start = list(input().split(" "))
+	coord = []
+	coord.append(int(start[0]))
+	coord.append(int(start[1]))
+	
+	result = plateau.checkSpace(coord)
+	
+	if result:
+		rover = Rover(start, (len(rovers) +1))
+		rovers.append(rover)
+		plateau.addRover(rover)
+		print("The rover as been added to the plateau")
+	else:
+		print("The rover could not be placed. Please try again.")
+	menu()
+
+
+def printRovers():
+	if len(rovers) == 0:
+		print("There are currently no rovers on the plateau")
+	else:
+		for r in rovers:
+			r.displayRover()
+	
+	menu()
+
+def controlRover(curRover):
+	if len(rovers) == 0:
+		print("There are currently no rovers on the plateau")
+	else:
+		print("Enter the command for the rover")
+		command = list(input())
+		for c in range(0, len(command)):
+			if command[c] == "M":
+				curRover.move()
+			else:
+				curRover.rotate(command[c])
+		curRover.displayRover()
+	menu()
+
+
+option = ""
+
+def menu():
+	print("Press enter to continue ...")
+	input()
+	print("Options:")
+	print("1. View all Rovers:")
+	print("2. Move a Rover")
+	print("3. Add a Rover")
+	print("4. Remove a Rover")
+	print("5. Quit")
+	print("Enter the option number you want to choose")
+	option = int(input())
+	if option == 1:
+		printRovers()
+	elif option == 2:
+		print("Enter the number of the rover you want to move")
+		curRover = rovers[(int(input()) - 1)]
+		controlRover(curRover)
+	elif option == 3:
+		createRover()
+	elif option == 4:
+		print("Enter the number of the rover you want to remove")
+		rovers.remove(rovers[(int(input()) - 1)])
+		menu()
+	elif option == 5:
+		print("End of program.")
+		quit()
+
+
+
+### creating a plateau 
+
+print("Please enter the upper right coordinates of the plateau")
+plateauSize = input().split(" ")
+global plateau
+plateau = Plateau(plateauSize)
+
+menu()
