@@ -1,8 +1,1 @@
-print("hi")
-print("WHat is your name"
-name = input()
 
-if name == "blah":
-  print("no")
-else:
-  print("hello", name)
