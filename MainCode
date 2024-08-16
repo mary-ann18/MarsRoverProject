@@ -54,7 +54,8 @@ class Plateau:
 
 	def addRover(self, rover):
 		self.__rovers.append(rover)
-
+	def removeRover(self, rover):
+		self.__rovers.remove(self.__rovers[(rove - 1)])
 	def checkSpace(self, newPos):
 		if newPos[0] > self.__plateauX or newPos[0] < 0 or newPos[1] > self.__plateauY or newPos[1] < 0:
 			return False
@@ -135,7 +136,10 @@ def menu():
 		createRover()
 	elif option == 4:
 		print("Enter the number of the rover you want to remove")
-		rovers.remove(rovers[(int(input()) - 1)])
+		rover = int(input())
+		plateau.removeRover(rover)
+		rovers.remove(rovers[(rover - 1)])
+		
 		menu()
 	elif option == 5:
 		print("End of program.")
